@@ -7,16 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6E26694D1C8AFB7500779CFC /* UIScrollViewExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E26694B1C8AFB7500779CFC /* UIScrollViewExtension.m */; };
 		6E68ED371C76FBC600BA18DE /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E68ED361C76FBC600BA18DE /* main.m */; };
 		6E68ED3A1C76FBC600BA18DE /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E68ED391C76FBC600BA18DE /* AppDelegate.m */; };
 		6E68ED3D1C76FBC600BA18DE /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E68ED3C1C76FBC600BA18DE /* ViewController.m */; };
 		6E68ED401C76FBC600BA18DE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6E68ED3E1C76FBC600BA18DE /* Main.storyboard */; };
 		6E68ED421C76FBC600BA18DE /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6E68ED411C76FBC600BA18DE /* Assets.xcassets */; };
 		6E68ED451C76FBC600BA18DE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 6E68ED431C76FBC600BA18DE /* LaunchScreen.storyboard */; };
-		6E68ED4E1C76FBDC00BA18DE /* UIScrollViewExtension.m in Sources */ = {isa = PBXBuildFile; fileRef = 6E68ED4D1C76FBDC00BA18DE /* UIScrollViewExtension.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		6E26694B1C8AFB7500779CFC /* UIScrollViewExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIScrollViewExtension.m; sourceTree = "<group>"; };
+		6E26694C1C8AFB7500779CFC /* UIScrollViewExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIScrollViewExtension.h; sourceTree = "<group>"; };
 		6E68ED321C76FBC600BA18DE /* UIScrollViewExtensionDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UIScrollViewExtensionDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6E68ED361C76FBC600BA18DE /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		6E68ED381C76FBC600BA18DE /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -27,8 +29,6 @@
 		6E68ED411C76FBC600BA18DE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6E68ED441C76FBC600BA18DE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		6E68ED461C76FBC600BA18DE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		6E68ED4C1C76FBDC00BA18DE /* UIScrollViewExtension.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UIScrollViewExtension.h; sourceTree = "<group>"; };
-		6E68ED4D1C76FBDC00BA18DE /* UIScrollViewExtension.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIScrollViewExtension.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +45,8 @@
 		6E68ED291C76FBC600BA18DE = {
 			isa = PBXGroup;
 			children = (
+				6E26694B1C8AFB7500779CFC /* UIScrollViewExtension.m */,
+				6E26694C1C8AFB7500779CFC /* UIScrollViewExtension.h */,
 				6E68ED341C76FBC600BA18DE /* UIScrollViewExtensionDemo */,
 				6E68ED331C76FBC600BA18DE /* Products */,
 			);
@@ -61,8 +63,6 @@
 		6E68ED341C76FBC600BA18DE /* UIScrollViewExtensionDemo */ = {
 			isa = PBXGroup;
 			children = (
-				6E68ED4C1C76FBDC00BA18DE /* UIScrollViewExtension.h */,
-				6E68ED4D1C76FBDC00BA18DE /* UIScrollViewExtension.m */,
 				6E68ED381C76FBC600BA18DE /* AppDelegate.h */,
 				6E68ED391C76FBC600BA18DE /* AppDelegate.m */,
 				6E68ED3B1C76FBC600BA18DE /* ViewController.h */,
@@ -157,7 +157,7 @@
 				6E68ED3D1C76FBC600BA18DE /* ViewController.m in Sources */,
 				6E68ED3A1C76FBC600BA18DE /* AppDelegate.m in Sources */,
 				6E68ED371C76FBC600BA18DE /* main.m in Sources */,
-				6E68ED4E1C76FBDC00BA18DE /* UIScrollViewExtension.m in Sources */,
+				6E26694D1C8AFB7500779CFC /* UIScrollViewExtension.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
