@@ -45,8 +45,8 @@
 		6E68ED291C76FBC600BA18DE = {
 			isa = PBXGroup;
 			children = (
-				6E26694B1C8AFB7500779CFC /* UIScrollViewExtension.m */,
 				6E26694C1C8AFB7500779CFC /* UIScrollViewExtension.h */,
+				6E26694B1C8AFB7500779CFC /* UIScrollViewExtension.m */,
 				6E68ED341C76FBC600BA18DE /* UIScrollViewExtensionDemo */,
 				6E68ED331C76FBC600BA18DE /* Products */,
 			);

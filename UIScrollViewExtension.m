@@ -24,6 +24,7 @@
 - (void)didMoveToSuperview; {
     [super didMoveToSuperview];
     
+//    NSLog(@"%s %ld", __FUNCTION__, self.extensions.count);
     for (NSObject<UIScrollViewExtensionProtocol> *extension in self.extensions) {
         if ([extension respondsToSelector:@selector(scrollViewDidMoveToSuperview)]) {
             [extension scrollViewDidMoveToSuperview];
@@ -33,21 +34,61 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context; {
     if ([keyPath isEqualToString:@"contentOffset"]) {
-        for (NSObject<UIScrollViewExtensionProtocol> *extension in self.extensions) {
-            [extension setContentOffset:self.contentOffset];
+        
+        
+        if ([self isKindOfClass:NSClassFromString(@"UITableViewWrapperView")]) {
+//            if ([self.superview isKindOfClass:[UIScrollView class]]) {
+//                UIScrollView *scrollView = (UIScrollView *)self.superview;
+//                extensions = objc_getAssociatedObject(scrollView, _cmd);
+//            }
+        }
+        else if ([self isKindOfClass:[UIScrollView class]]) {
+//            extensions = objc_getAssociatedObject(self, _cmd);
+            NSLog(@"Y:%lf", self.contentOffset.y);
+            for (NSObject<UIScrollViewExtensionProtocol> *extension in self.extensions) {
+                if ([extension respondsToSelector:@selector(contentOffsetChanged:)]) {
+                    [extension contentOffsetChanged:self.contentOffset];
+                }
+            }
+        }
+        
+//        if ([self isKindOfClass:[UIScrollView class]]) {
+//            
+//        }
+        
+    }
+}
+
+- (void)layoutSubviews; {
+    [super layoutSubviews];
+    
+    for (NSObject<UIScrollViewExtensionProtocol> *extension in self.extensions) {
+        if ([extension respondsToSelector:@selector(scrollViewLayoutSubviews)]) {
+            [extension scrollViewLayoutSubviews];
         }
     }
 }
 
 #pragma mark - property
 - (NSMutableArray<NSObject<UIScrollViewExtensionProtocol> *> *)extensions; {
-    NSMutableArray<NSObject<UIScrollViewExtensionProtocol> *> *array = objc_getAssociatedObject(self, _cmd);
-    if (!array) {
-        array = [NSMutableArray array];
-        objc_setAssociatedObject(self, _cmd, array, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    NSMutableArray<NSObject<UIScrollViewExtensionProtocol> *> *extensions;
+    if ([self isKindOfClass:NSClassFromString(@"UITableViewWrapperView")]) {
+        if ([self.superview isKindOfClass:[UIScrollView class]]) {
+            UIScrollView *scrollView = (UIScrollView *)self.superview;
+            extensions = objc_getAssociatedObject(scrollView, _cmd);
+        }
+    }
+    else if ([self isKindOfClass:[UIScrollView class]]) {
+        extensions = objc_getAssociatedObject(self, _cmd);
+    }
+    
+    
+    if (!extensions) {
+        extensions = [NSMutableArray array];
+        objc_setAssociatedObject(self, _cmd, extensions, OBJC_ASSOCIATION_RETAIN);
         [self addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:NULL];
     }
-    return array;
+    return extensions;
 }
 
 - (ESScrollViewAutoLoading *)autoLoading; {
@@ -82,6 +123,16 @@
     }
     return pageNumber;
 }
+- (ESScrollViewNoMoreData *)noMoreData; {
+    ESScrollViewNoMoreData *noMoreData = objc_getAssociatedObject(self, _cmd);
+    if (!noMoreData) {
+        noMoreData = [[ESScrollViewNoMoreData alloc] init];
+        noMoreData.scrollView = self;
+        [self.extensions addObject:noMoreData];
+        objc_setAssociatedObject(self, _cmd, noMoreData, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    return noMoreData;
+}
 
 @end
 
@@ -105,11 +156,11 @@
 - (void)setEnable:(BOOL)enable; {
     _enable = enable;
     if (_enable && self.autoLoadingBlock) {
-        [self setContentOffset:_scrollView.contentOffset];
+        [self contentOffsetChanged:_scrollView.contentOffset];
     }
 }
 
-- (void)setContentOffset:(CGPoint)contentOffset; {
+- (void)contentOffsetChanged:(CGPoint)contentOffset; {
     if (self.enable) {
         if (_scrollView.contentSize.height - _scrollView.contentOffset.y - _scrollView.frame.size.height < AutoLoadingOffset) {
             self.enable = NO;
@@ -150,7 +201,7 @@
     }
 }
 
-- (void)setContentOffset:(CGPoint)contentOffset; {
+- (void)contentOffsetChanged:(CGPoint)contentOffset; {
     if (self.enable && contentOffset.y > BackToTopOffset) {
         self.button.hidden = NO;
     }
@@ -215,10 +266,14 @@
 @interface ESScrollViewPageNumber ()
 {
     __weak UIScrollView *_scrollView;
+    
+    UIView *_view;
 }
 @property (assign, nonatomic) NSInteger timeOut;
 @property (strong, nonatomic) NSTimer *timer;
 @property (strong, nonatomic) UILabel  *label;
+
+@property (strong, nonatomic) UIView *noDataView;
 
 @end
 
@@ -226,15 +281,53 @@
 
 @synthesize scrollView = _scrollView;
 
+
+- (UIView *)noDataView; {
+    if (!_noDataView) {
+        _noDataView = [[UIView alloc] init];
+        _noDataView.backgroundColor = [UIColor whiteColor];
+        UIImageView *imageView = [[UIImageView alloc] init];
+        imageView.image = [UIImage imageNamed:@"icon-nomore"];
+        UILabel *messageLabel = [[UILabel alloc] init];
+        messageLabel.font = [UIFont fontWithName:@"ArialMT" size:14];
+        messageLabel.textColor = [UIColor colorWithRed:146/255.0 green:146/255.0 blue:146/255.0 alpha:1.0];
+        [_noDataView addSubview:imageView];
+        [_noDataView addSubview:messageLabel];
+    }
+    return _noDataView;
+}
+
 - (void)dealloc; {
     NSLog(@"%s", __FUNCTION__);
 }
+
+//- (void)scrollViewLayoutSubviews; {
+////    if (_view) {
+////        _view.frame = CGRectMake(0, _scrollView.contentSize.height, _scrollView.frame.size.width, 70);
+////    }
+//}
 
 
 - (void)setCurrentPage:(NSInteger)currentPage; {
     _currentPage = currentPage;
     NSString *pageNumberText = [NSString stringWithFormat:@"%ld/%ld", _currentPage, _numberOfPages];
     self.label.text = pageNumberText;
+    
+//    if (_currentPage >= _numberOfPages) {
+//        _view = [_scrollView viewWithTag:579787];
+//        if (!_view) {
+//            _view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 40)];
+//            _view.backgroundColor = [UIColor redColor];
+//            _view.frame = CGRectMake(0, _scrollView.contentSize.height, _scrollView.frame.size.width, 70);
+//            [_scrollView addSubview:_view];
+//        }
+//    }
+//    else {
+//        [_view removeFromSuperview];
+//        _view = NULL;
+//    }
+    
+    
 }
 - (void)setNumberOfPages:(NSInteger)numberOfPages; {
     _numberOfPages = numberOfPages;
@@ -249,7 +342,7 @@
     }
 }
 
-- (void)setContentOffset:(CGPoint)contentOffset; {
+- (void)contentOffsetChanged:(CGPoint)contentOffset; {
     if (self.enable && contentOffset.y) {
         self.timeOut = 2;
         [self timerFireMethod];
@@ -323,6 +416,75 @@
         [_scrollView.superview addConstraints:@[width, height, bottom, centerX]];
     }
     return _label;
+}
+
+@end
+
+
+
+@interface ESScrollViewNoMoreData ()
+{
+    __weak UIScrollView *_scrollView;
+}
+@property (strong, nonatomic) UIImageView   *imageView;
+@property (strong, nonatomic) UILabel       *messageLabel;
+
+@end
+
+@implementation ESScrollViewNoMoreData
+
+@synthesize scrollView = _scrollView;
+
+- (instancetype)init; {
+    if (self = [super init]) {
+        self.backgroundColor = [UIColor whiteColor];
+    }
+    return self;
+}
+
+- (void)setEnable:(BOOL)enable; {
+    if (_enable == enable) {
+        return;
+    }
+    _enable = enable;
+    if (_enable) {
+        [_scrollView addSubview:self];
+    }
+    else {
+        [self removeFromSuperview];
+    }
+}
+
+- (void)scrollViewLayoutSubviews; {
+    self.frame = CGRectMake(0, _scrollView.contentSize.height, _scrollView.frame.size.width, 50);
+    [self setNeedsLayout];
+}
+
+- (void)layoutSubviews; {
+    [super layoutSubviews];
+    self.imageView.frame = CGRectMake((self.frame.size.width-190)/2, 10, 30, 30);
+    self.messageLabel.frame = CGRectMake((self.frame.size.width-190)/2+30+10, 15, 150, 20);
+}
+
+
+#pragma mark - Lazy
+- (UIImageView *)imageView; {
+    if (!_imageView) {
+        _imageView = [[UIImageView alloc] init];
+        _imageView.image = [UIImage imageNamed:@"icon-nomore"];
+        [self addSubview:_imageView];
+    }
+    return _imageView;
+}
+- (UILabel *)messageLabel; {
+    if (!_messageLabel) {
+        _messageLabel = [[UILabel alloc] init];
+        _messageLabel.font = [UIFont fontWithName:@"ArialMT" size:14];
+        _messageLabel.textColor = [UIColor colorWithRed:146/255.0 green:146/255.0 blue:146/255.0 alpha:1.0];
+        _messageLabel.text = @"亲~已经没有更多信息了";
+        [self addSubview:_messageLabel];
+    }
+    return _messageLabel;
 }
 
 @end

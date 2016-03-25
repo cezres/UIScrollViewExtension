@@ -38,6 +38,15 @@
     [_tableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"Cell"];
     [self.view addSubview:_tableView];
     
+//    if ([_tableView isKindOfClass:[UIScrollView class]]) {
+//        NSLog(@"aaaa");
+//    }
+//    
+//    UIScrollView *sc = [[UIScrollView alloc] init];
+//    if ([sc isKindOfClass:[UIScrollView class]]) {
+//        NSLog(@"bbb");
+//    }
+    
     
     _tableView.autoLoading.enable = YES;
     __weak typeof(self) weakself = self;
@@ -49,7 +58,9 @@
     
     _tableView.pageNumber.enable = YES;
     
+    _tableView.noMoreData.enable = NO;
     
+//    UIControlEventValueChanged
     
     _tableView.pageNumber.numberOfPages = (maxCount + pageSize - 1) / pageSize;
 }
@@ -65,7 +76,14 @@
         _tableView.autoLoading.enable = YES;
     }
     
+    
+    
     _tableView.pageNumber.currentPage = (count + pageSize - 1) / pageSize;
+    
+    
+    if (_tableView.pageNumber.currentPage == 13) {
+        _tableView.noMoreData.enable = YES;
+    }
 }
 
 #pragma mark - UITableViewDataSource
