@@ -37,21 +37,6 @@
     
 }
 
-- (void)willMoveToSuperview:(UIView *)newSuperview; {
-    [super willMoveToSuperview:newSuperview];
-//    if (newSuperview && ![newSuperview isKindOfClass:[UIScrollView class]]) {
-//        return;
-//    }
-//    if (!newSuperview) {
-//        if (self.extensions.count > 0) {
-//            [self.extensions removeAllObjects];
-//            [self removeObserver:self forKeyPath:@"contentOffset"];
-//        }
-//    }
-    
-    
-}
-
 - (void)didMoveToSuperview; {
     [super didMoveToSuperview];
     NSArray<NSObject<UIScrollViewExtensionProtocol> *> *extensions = [self.extensions mutableCopy];
