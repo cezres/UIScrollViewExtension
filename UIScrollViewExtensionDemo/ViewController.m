@@ -58,7 +58,7 @@
     
     _tableView.pageNumber.enable = YES;
     
-    _tableView.noMoreData.enable = NO;
+//    _tableView.noMoreData.enable = NO;
     
 //    UIControlEventValueChanged
     

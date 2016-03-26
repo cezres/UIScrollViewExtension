@@ -25,7 +25,8 @@
     [super didMoveToSuperview];
     
 //    NSLog(@"%s %ld", __FUNCTION__, self.extensions.count);
-    for (NSObject<UIScrollViewExtensionProtocol> *extension in self.extensions) {
+    NSArray<NSObject<UIScrollViewExtensionProtocol> *> *extensions = [self.extensions mutableCopy];
+    for (NSObject<UIScrollViewExtensionProtocol> *extension in extensions) {
         if ([extension respondsToSelector:@selector(scrollViewDidMoveToSuperview)]) {
             [extension scrollViewDidMoveToSuperview];
         }
@@ -37,32 +38,24 @@
         
         
         if ([self isKindOfClass:NSClassFromString(@"UITableViewWrapperView")]) {
-//            if ([self.superview isKindOfClass:[UIScrollView class]]) {
-//                UIScrollView *scrollView = (UIScrollView *)self.superview;
-//                extensions = objc_getAssociatedObject(scrollView, _cmd);
-//            }
         }
         else if ([self isKindOfClass:[UIScrollView class]]) {
-//            extensions = objc_getAssociatedObject(self, _cmd);
             NSLog(@"Y:%lf", self.contentOffset.y);
-            for (NSObject<UIScrollViewExtensionProtocol> *extension in self.extensions) {
+            NSArray<NSObject<UIScrollViewExtensionProtocol> *> *extensions = [self.extensions mutableCopy];
+            for (NSObject<UIScrollViewExtensionProtocol> *extension in extensions) {
                 if ([extension respondsToSelector:@selector(contentOffsetChanged:)]) {
                     [extension contentOffsetChanged:self.contentOffset];
                 }
             }
         }
-        
-//        if ([self isKindOfClass:[UIScrollView class]]) {
-//            
-//        }
-        
     }
 }
 
 - (void)layoutSubviews; {
     [super layoutSubviews];
     
-    for (NSObject<UIScrollViewExtensionProtocol> *extension in self.extensions) {
+    NSArray<NSObject<UIScrollViewExtensionProtocol> *> *extensions = [self.extensions mutableCopy];
+    for (NSObject<UIScrollViewExtensionProtocol> *extension in extensions) {
         if ([extension respondsToSelector:@selector(scrollViewLayoutSubviews)]) {
             [extension scrollViewLayoutSubviews];
         }
