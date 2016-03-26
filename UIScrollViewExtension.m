@@ -18,13 +18,42 @@
 
 - (void)dealloc; {
     NSLog(@"%s", __FUNCTION__);
-    [self removeObserver:self forKeyPath:@"contentOffset"];
+    
+    
+    if (self.extensions.count > 0) {
+        [self.extensions removeAllObjects];
+        if ([self isKindOfClass:NSClassFromString(@"UITableViewWrapperView")]) {
+            if ([self.superview isKindOfClass:[UIScrollView class]]) {
+                UIScrollView *scrollView = (UIScrollView *)self.superview;
+                [scrollView removeObserver:scrollView forKeyPath:@"contentOffset"];
+            }
+        }
+        else if ([self isKindOfClass:[UIScrollView class]]) {
+            [self removeObserver:self forKeyPath:@"contentOffset"];
+        }
+    }
+    
+    
+    
+}
+
+- (void)willMoveToSuperview:(UIView *)newSuperview; {
+    [super willMoveToSuperview:newSuperview];
+//    if (newSuperview && ![newSuperview isKindOfClass:[UIScrollView class]]) {
+//        return;
+//    }
+//    if (!newSuperview) {
+//        if (self.extensions.count > 0) {
+//            [self.extensions removeAllObjects];
+//            [self removeObserver:self forKeyPath:@"contentOffset"];
+//        }
+//    }
+    
+    
 }
 
 - (void)didMoveToSuperview; {
     [super didMoveToSuperview];
-    
-//    NSLog(@"%s %ld", __FUNCTION__, self.extensions.count);
     NSArray<NSObject<UIScrollViewExtensionProtocol> *> *extensions = [self.extensions mutableCopy];
     for (NSObject<UIScrollViewExtensionProtocol> *extension in extensions) {
         if ([extension respondsToSelector:@selector(scrollViewDidMoveToSuperview)]) {
@@ -35,8 +64,6 @@
 
 - (void)observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object change:(NSDictionary<NSString *,id> *)change context:(void *)context; {
     if ([keyPath isEqualToString:@"contentOffset"]) {
-        
-        
         if ([self isKindOfClass:NSClassFromString(@"UITableViewWrapperView")]) {
         }
         else if ([self isKindOfClass:[UIScrollView class]]) {
@@ -78,8 +105,20 @@
     
     if (!extensions) {
         extensions = [NSMutableArray array];
-        objc_setAssociatedObject(self, _cmd, extensions, OBJC_ASSOCIATION_RETAIN);
-        [self addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:NULL];
+        
+        if ([self isKindOfClass:NSClassFromString(@"UITableViewWrapperView")]) {
+            if ([self.superview isKindOfClass:[UIScrollView class]]) {
+                UIScrollView *scrollView = (UIScrollView *)self.superview;
+                objc_setAssociatedObject(scrollView, _cmd, extensions, OBJC_ASSOCIATION_RETAIN);
+                [scrollView addObserver:scrollView forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:NULL];
+            }
+        }
+        else if ([self isKindOfClass:[UIScrollView class]]) {
+            objc_setAssociatedObject(self, _cmd, extensions, OBJC_ASSOCIATION_RETAIN);
+            [self addObserver:self forKeyPath:@"contentOffset" options:NSKeyValueObservingOptionNew context:NULL];
+        }
+//        objc_setAssociatedObject(self, _cmd, extensions, OBJC_ASSOCIATION_RETAIN);
+        
     }
     return extensions;
 }
@@ -294,33 +333,11 @@
     NSLog(@"%s", __FUNCTION__);
 }
 
-//- (void)scrollViewLayoutSubviews; {
-////    if (_view) {
-////        _view.frame = CGRectMake(0, _scrollView.contentSize.height, _scrollView.frame.size.width, 70);
-////    }
-//}
-
 
 - (void)setCurrentPage:(NSInteger)currentPage; {
     _currentPage = currentPage;
     NSString *pageNumberText = [NSString stringWithFormat:@"%ld/%ld", _currentPage, _numberOfPages];
     self.label.text = pageNumberText;
-    
-//    if (_currentPage >= _numberOfPages) {
-//        _view = [_scrollView viewWithTag:579787];
-//        if (!_view) {
-//            _view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 200, 40)];
-//            _view.backgroundColor = [UIColor redColor];
-//            _view.frame = CGRectMake(0, _scrollView.contentSize.height, _scrollView.frame.size.width, 70);
-//            [_scrollView addSubview:_view];
-//        }
-//    }
-//    else {
-//        [_view removeFromSuperview];
-//        _view = NULL;
-//    }
-    
-    
 }
 - (void)setNumberOfPages:(NSInteger)numberOfPages; {
     _numberOfPages = numberOfPages;
