@@ -46,6 +46,7 @@
     }];
     
     _tableView.topButton.enable = YES;
+    
     _tableView.pageNumber.enable = YES;
     
     _tableView.pageNumber.numberOfPages = (maxCount + pageSize - 1) / pageSize;

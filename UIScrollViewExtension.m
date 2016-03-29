@@ -16,25 +16,21 @@
 #pragma mark - UIScrollView Extension
 @implementation UIScrollView (Extension)
 
-- (void)dealloc; {
-    NSLog(@"%s", __FUNCTION__);
-    
-    
-    if (self.extensions.count > 0) {
-        [self.extensions removeAllObjects];
-        if ([self isKindOfClass:NSClassFromString(@"UITableViewWrapperView")]) {
-            if ([self.superview isKindOfClass:[UIScrollView class]]) {
-                UIScrollView *scrollView = (UIScrollView *)self.superview;
-                [scrollView removeObserver:scrollView forKeyPath:@"contentOffset"];
+- (void)willMoveToSuperview:(UIView *)newSuperview; {
+    if (newSuperview == NULL) {
+        if (self.extensions.count > 0) {
+            [self.extensions removeAllObjects];
+            if ([self isKindOfClass:NSClassFromString(@"UITableViewWrapperView")]) {
+                if ([self.superview isKindOfClass:[UIScrollView class]]) {
+                    UIScrollView *scrollView = (UIScrollView *)self.superview;
+                    [scrollView removeObserver:scrollView forKeyPath:@"contentOffset"];
+                }
+            }
+            else if ([self isKindOfClass:[UIScrollView class]]) {
+                [self removeObserver:self forKeyPath:@"contentOffset"];
             }
         }
-        else if ([self isKindOfClass:[UIScrollView class]]) {
-            [self removeObserver:self forKeyPath:@"contentOffset"];
-        }
     }
-    
-    
-    
 }
 
 - (void)didMoveToSuperview; {
@@ -416,7 +412,7 @@
 @end
 
 
-
+#pragma mark - NoMoreData
 @interface ESScrollViewNoMoreData ()
 {
     __weak UIScrollView *_scrollView;
@@ -451,8 +447,14 @@
 }
 
 - (void)scrollViewLayoutSubviews; {
-    self.frame = CGRectMake(0, _scrollView.contentSize.height, _scrollView.frame.size.width, 50);
-    [self setNeedsLayout];
+    if (_scrollView.contentSize.height <= _scrollView.frame.size.height) {
+        self.hidden = YES;
+    }
+    else {
+        self.hidden = NO;
+        self.frame = CGRectMake(0, _scrollView.contentSize.height, _scrollView.frame.size.width, 50);
+        [self setNeedsLayout];
+    }
 }
 
 - (void)layoutSubviews; {
