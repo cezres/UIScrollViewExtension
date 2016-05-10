@@ -1,14 +1,12 @@
 //
 //  AppDelegate.m
-//  UIScrollViewExtensionDemo
+//  UIScrollViewExtension-Demo
 //
-//  Created by 翟泉 on 16/2/19.
+//  Created by 翟泉 on 16/5/9.
 //  Copyright © 2016年 云之彼端. All rights reserved.
 //
 
 #import "AppDelegate.h"
-
-
 
 @interface AppDelegate ()
 
@@ -19,7 +17,6 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
-    
     return YES;
 }
 

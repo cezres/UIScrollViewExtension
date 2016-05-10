@@ -1,8 +1,8 @@
 //
 //  ViewController.h
-//  UIScrollViewExtensionDemo
+//  UIScrollViewExtension-Demo
 //
-//  Created by 翟泉 on 16/2/19.
+//  Created by 翟泉 on 16/5/9.
 //  Copyright © 2016年 云之彼端. All rights reserved.
 //
 
