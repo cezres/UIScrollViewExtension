@@ -87,8 +87,8 @@
 			children = (
 				6EE502211CE05CDD002DA7F6 /* AppDelegate.h */,
 				6EE502221CE05CDD002DA7F6 /* AppDelegate.m */,
-				6EE502241CE05CDD002DA7F6 /* ViewController.h */,
 				6EE502251CE05CDD002DA7F6 /* ViewController.m */,
+				6EE502241CE05CDD002DA7F6 /* ViewController.h */,
 				6EE502271CE05CDD002DA7F6 /* Main.storyboard */,
 				6EE5022A1CE05CDD002DA7F6 /* Assets.xcassets */,
 				6EE5022C1CE05CDD002DA7F6 /* LaunchScreen.storyboard */,
